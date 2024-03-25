@@ -12,7 +12,11 @@ defmodule FaithWeb.UserSettingsLive do
 
     <div class="space-y-12 divide-y">
       <div>
-        <img :if={@current_user.profile_image} class="w-24 h-24 mb-3 rounded-full shadow-lg" src={@current_user.profile_image}/>
+        <img
+          :if={@current_user.profile_image}
+          class="w-24 h-24 mb-3 rounded-full shadow-lg"
+          src={@current_user.profile_image}
+        />
 
         <.simple_form for={@form} phx-submit="update_profile" phx-change="validate">
           <.live_file_input
@@ -24,7 +28,14 @@ defmodule FaithWeb.UserSettingsLive do
               <figure class="flex items-center">
                 <.live_img_preview entry={entry} width="150" />
                 <figcaption><%= entry.client_name %></figcaption>&nbsp;
-                <button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+                <button
+                  type="button"
+                  phx-click="cancel-upload"
+                  phx-value-ref={entry.ref}
+                  aria-label="cancel"
+                >
+                  &times;
+                </button>
               </figure>
             </article>
             <.error :for={err <- upload_errors(@uploads.profile_image, entry)} class="!mt-0">
@@ -194,8 +205,6 @@ defmodule FaithWeb.UserSettingsLive do
   def handle_event("cancel-upload", %{"ref" => ref}, socket) do
     {:noreply, cancel_upload(socket, :profile_image, ref)}
   end
-
-
 
   def handle_event("validate_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
