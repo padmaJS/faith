@@ -280,9 +280,10 @@ defmodule FaithWeb.UserSettingsLive do
         {:ok, "/uploads/" <> Path.basename(dest)}
       end)
 
-    socket = update(socket, :uploaded_files, &(&1 ++ uploaded_files))
-
-    params = Map.put(params, "profile_image", List.first(uploaded_files))
+    params =
+      if uploaded_files != [],
+        do: Map.put(params, "profile_image", List.first(uploaded_files)),
+        else: params
 
     case Accounts.update_user(user, params) do
       {:ok, user} ->
