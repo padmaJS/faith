@@ -2,6 +2,11 @@ defmodule Faith.Accounts.User do
   use Faith.Schema
   import Ecto.Changeset
 
+  @derive {
+    Flop.Schema,
+    filterable: [:full_name, :email, :inserted_at], sortable: [:full_name, :email, :inserted_at]
+  }
+
   schema "users" do
     field :full_name, :string
     field :email, :string
@@ -21,6 +26,7 @@ defmodule Faith.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :utc_datetime
+    field :is_disabled, :boolean, default: false
 
     timestamps(type: :utc_datetime)
   end
@@ -62,12 +68,21 @@ defmodule Faith.Accounts.User do
     :gender
   ]
 
-  @attrs @req_attrs ++ [:profile_image]
+  @attrs @req_attrs ++ [:profile_image, :is_disabled]
 
   def changeset(user, attrs) do
     user
     |> cast(attrs, @attrs)
-    |> validate_required(@req_attrs)
+    |> maybe_validate_required(attrs)
+  end
+
+  defp maybe_validate_required(changeset, opts) do
+    if Map.get(opts, :validate_required, true) do
+      changeset
+      |> validate_required(@req_attrs)
+    else
+      changeset
+    end
   end
 
   def registration_changeset(user, attrs, opts \\ []) do

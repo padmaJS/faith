@@ -17,10 +17,6 @@ defmodule FaithWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", FaithWeb do
-    pipe_through :browser
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", FaithWeb do
   #   pipe_through :api
@@ -57,6 +53,16 @@ defmodule FaithWeb.Router do
     end
 
     post "/users/log_in", UserSessionController, :create
+  end
+
+  scope "/admin", FaithWeb.Admin do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session(:require_authenticated_admin,
+      on_mount: [{FaithWeb.UserAuth, :ensure_authenticated}, {FaithWeb.Auth, :admin}]
+    ) do
+      live "/users", UsersLive.Index, :index
+    end
   end
 
   scope "/", FaithWeb do

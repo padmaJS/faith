@@ -23,6 +23,7 @@ defmodule Faith.Repo.Migrations.CreateUsersAuthTables do
       add :preferred_min_age, :integer
       add :looking_for, :string
       add :completed_at, :utc_datetime
+      add :is_disabled, :boolean, default: false
       timestamps(type: :utc_datetime)
     end
 

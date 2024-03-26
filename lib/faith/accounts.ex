@@ -368,4 +368,20 @@ defmodule Faith.Accounts do
     |> User.changeset(%{completed_at: now})
     |> Repo.update()
   end
+
+  def delete_user(user) do
+    Repo.delete(user)
+  end
+
+  def list_users(params) do
+    params = if params == %{}, do: %{"order_by" => ["inserted_at"]}, else: params
+
+    case Flop.validate_and_run(User, params, for: User) do
+      {:ok, {users, meta}} ->
+        %{users: users, meta: meta}
+
+      {:error, meta} ->
+        %{users: [], meta: meta}
+    end
+  end
 end
