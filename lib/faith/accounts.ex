@@ -373,6 +373,10 @@ defmodule Faith.Accounts do
     Repo.delete(user)
   end
 
+  def list_users() do
+    Repo.all(User)
+  end
+
   def list_users(params) do
     params = if params == %{}, do: %{"order_by" => ["inserted_at"]}, else: params
 

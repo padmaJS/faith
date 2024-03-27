@@ -55,13 +55,18 @@ defmodule FaithWeb.Router do
     post "/users/log_in", UserSessionController, :create
   end
 
-  scope "/admin", FaithWeb.Admin do
+  scope "/", FaithWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session(:require_authenticated_admin,
       on_mount: [{FaithWeb.UserAuth, :ensure_authenticated}, {FaithWeb.Auth, :admin}]
     ) do
-      live "/users", UsersLive.Index, :index
+      live "/events/new", EventsLive.Index, :new
+      live "/events/:id/edit", EventsLive.Index, :edit
+
+      scope "/admin", Admin do
+        live "/users", UsersLive.Index, :index
+      end
     end
   end
 
@@ -75,6 +80,13 @@ defmodule FaithWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/users/profile", UserProfileLive.Show, :show
+
+      live "/events", EventsLive.Index, :index
+
+      live "/discover", DiscoverLive.Index, :index
+
+      live "/messages", MessagesLive.Index, :index
+      live "/messages/:id/chat", MessagesLive.Index, :chat
     end
   end
 

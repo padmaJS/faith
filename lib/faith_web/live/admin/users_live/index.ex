@@ -25,17 +25,17 @@ defmodule FaithWeb.Admin.UsersLive.Index do
       </:col>
 
       <:action :let={{id, user}}>
-        <.button
+        <button
           phx-click="toggle_disable"
           phx-value-user_id={user.id}
           class={[
             "text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mr-2 mb-2 focus:outline-none",
-            user.is_disabled && "bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300",
+            user.is_disabled && "!bg-green-700 hover:!bg-green-800 focus:ring-4 focus:ring-green-300",
             !user.is_disabled && "bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300"
           ]}
         >
           <%= if user.is_disabled, do: "Enable", else: "Disable" %>
-        </.button>
+        </button>
         <.link
           class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
           phx-click={JS.push("delete", value: %{id: user.id}) |> hide("##{id}")}
@@ -56,7 +56,7 @@ defmodule FaithWeb.Admin.UsersLive.Index do
     """
   end
 
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     {:ok, socket}
   end
 

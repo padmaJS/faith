@@ -60,7 +60,8 @@ defmodule Faith.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:flop, "~> 0.25.0"},
-      {:flop_phoenix, "~> 0.22.8"}
+      {:flop_phoenix, "~> 0.22.8"},
+      {:timex, "~> 3.7"}
     ]
   end
 

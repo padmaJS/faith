@@ -68,7 +68,7 @@ defmodule Faith.Accounts.User do
     :gender
   ]
 
-  @attrs @req_attrs ++ [:profile_image, :is_disabled]
+  @attrs @req_attrs ++ [:profile_image, :is_disabled, :completed_at]
 
   def changeset(user, attrs) do
     user
