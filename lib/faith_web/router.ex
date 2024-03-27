@@ -84,6 +84,9 @@ defmodule FaithWeb.Router do
       live "/events", EventsLive.Index, :index
 
       live "/discover", DiscoverLive.Index, :index
+
+      live "/messages", MessagesLive.Index, :index
+      live "/messages/:id/chat", MessagesLive.Index, :chat
     end
   end
 

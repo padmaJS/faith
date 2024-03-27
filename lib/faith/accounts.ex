@@ -7,7 +7,6 @@ defmodule Faith.Accounts do
   alias Faith.Repo
 
   alias Faith.Accounts.{User, UserToken, UserNotifier}
-  alias Faith.Matches.Swipe
 
   ## Database getters
 
@@ -388,19 +387,5 @@ defmodule Faith.Accounts do
       {:error, meta} ->
         %{users: [], meta: meta}
     end
-  end
-
-  def list_users_without_matching_swipe(user_id) do
-    User
-    |> where(
-      [u],
-      u.id != ^user_id and
-        u.id not in subquery(
-          Swipe
-          |> where([s], s.sender_id == ^user_id)
-          |> select([s], s.receiver_id)
-        )
-    )
-    |> Repo.all()
   end
 end

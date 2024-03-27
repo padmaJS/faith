@@ -68,7 +68,7 @@ now = DateTime.utc_now() |> DateTime.truncate(:second)
   looking_for: "female",
   confirmed_at: now,
   completed_at: now,
-  hashed_password: "$2b$12$Xl6j8Yjz3vJZ4h4e0Qw6OuQyV8aGp1v6RQyNwX5Ku5z8W3J9oZ5eS"
+  hashed_password: Bcrypt.hash_pwd_salt("user")
 }
 |> Repo.insert!()
 

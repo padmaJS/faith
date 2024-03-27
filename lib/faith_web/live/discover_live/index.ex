@@ -1,7 +1,7 @@
 defmodule FaithWeb.DiscoverLive.Index do
   use FaithWeb, :live_view
 
-  alias Faith.{Accounts, Matches}
+  alias Faith.Matches
 
   def render(assigns) do
     ~H"""
@@ -29,7 +29,7 @@ defmodule FaithWeb.DiscoverLive.Index do
                 <g id="SVGRepo_iconCarrier">
                   <defs>
                     <style>
-                      .cls-2 { fill: #9f4c4c; fill-rule: evenodd; } 
+                      .cls-2 { fill: #9f4c4c; fill-rule: evenodd; }
                     </style>
                   </defs>
                   <path
@@ -54,7 +54,7 @@ defmodule FaithWeb.DiscoverLive.Index do
                 <g id="SVGRepo_iconCarrier">
                   <defs>
                     <style>
-                      .cls-1 { fill: #699f4c; fill-rule: evenodd; } 
+                      .cls-1 { fill: #699f4c; fill-rule: evenodd; }
                     </style>
                   </defs>
                   <path
@@ -78,7 +78,7 @@ defmodule FaithWeb.DiscoverLive.Index do
 
   def mount(_params, _session, socket) do
     user =
-      Accounts.list_users_without_matching_swipe(socket.assigns.current_user.id) |> Enum.at(0)
+      Matches.list_users_without_matching_swipe(socket.assigns.current_user.id) |> Enum.at(0)
 
     {:ok, assign(socket, user: user, current_page: :discover)}
   end
@@ -91,7 +91,7 @@ defmodule FaithWeb.DiscoverLive.Index do
     })
 
     user =
-      Accounts.list_users_without_matching_swipe(socket.assigns.current_user.id) |> Enum.at(0)
+      Matches.list_users_without_matching_swipe(socket.assigns.current_user.id) |> Enum.at(0)
 
     {:noreply, socket |> assign(user: user)}
   end
@@ -104,16 +104,19 @@ defmodule FaithWeb.DiscoverLive.Index do
          }) do
       {:ok, _} ->
         user =
-          Accounts.list_users_without_matching_swipe(socket.assigns.current_user.id) |> Enum.at(0)
+          Matches.list_users_without_matching_swipe(socket.assigns.current_user.id) |> Enum.at(0)
 
         socket =
-          if {:ok, _} =
-               Matches.maybe_create_match(%{
+          case Matches.maybe_create_match(%{
                  user_1_id: socket.assigns.current_user.id,
                  user_2_id: receiver_id
-               }),
-             do: socket |> put_flash(:info, "Match found!"),
-             else: socket
+               }) do
+            {:ok, _} ->
+              socket |> put_flash(:info, "Match found!")
+
+            _ ->
+              socket
+          end
 
         {:noreply, socket |> assign(user: user)}
 
