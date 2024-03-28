@@ -63,6 +63,7 @@ defmodule FaithWeb.Router do
     ) do
       live "/events/new", EventsLive.Index, :new
       live "/events/:id/edit", EventsLive.Index, :edit
+      live "/events/:id/invite_matches", EventsLive.Index, :invite_matches
 
       scope "/admin", Admin do
         live "/users", UsersLive.Index, :index

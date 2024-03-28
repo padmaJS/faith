@@ -14,18 +14,21 @@ defmodule FaithWeb.MessagesLive.Index do
             <span class="text-gray-500">No matches yet</span>
           <% else %>
             <%= for match <- @matches do %>
-            <% user = Matches.get_matched_user(match, @current_user.id) %>
-            <.link
-              class={["flex items-center hover:bg-gray-200 p-2 rounded-md cursor-pointer w-full", @matched_user && @matched_user.id == user.id && "bg-gray-200"] }
-              patch={~p"/messages/#{match.id}/chat"}
-            >
-              <img
-                src={user.profile_image || ~p"/images/avatar-default.svg"}
-                alt={user.full_name}
-                class="w-10 h-10 rounded-full mr-2"
-              />
-              <span class="font-medium"><%= user.full_name %></span>
-            </.link>
+              <% user = Matches.get_matched_user(match, @current_user.id) %>
+              <.link
+                class={[
+                  "flex items-center hover:bg-gray-200 p-2 rounded-md cursor-pointer w-full",
+                  @matched_user && @matched_user.id == user.id && "bg-gray-200"
+                ]}
+                patch={~p"/messages/#{match.id}/chat"}
+              >
+                <img
+                  src={user.profile_image || ~p"/images/avatar-default.svg"}
+                  alt={user.full_name}
+                  class="w-10 h-10 rounded-full mr-2"
+                />
+                <span class="font-medium"><%= user.full_name %></span>
+              </.link>
             <% end %>
           <% end %>
         </div>
@@ -34,40 +37,51 @@ defmodule FaithWeb.MessagesLive.Index do
       <%= if @live_action == :chat && @matched_user do %>
         <div class="bg-white flex flex-col justify-between w-[85%]">
           <div class="flex items-center w-full bg-gray-100 p-4">
-            <img src={ @matched_user.profile_image || ~p"/images/avatar-default.svg"} class="w-10 h-10 rounded-full mr-2" />
+            <img
+              src={@matched_user.profile_image || ~p"/images/avatar-default.svg"}
+              class="w-10 h-10 rounded-full mr-2"
+            />
             <%= @matched_user.full_name %>
           </div>
-          <div class="flex-grow flex flex-col p-4 pb-0 h-[70%]" >
+          <div class="flex-grow flex flex-col p-4 pb-0 h-[70%]">
             <div class="flex-grow overflow-y-auto">
               <%= for {id, message} <- @streams.messages do %>
                 <%= if message.sender_id == @current_user.id do %>
-                <div id={id} class="flex justify-end mb-4 items-center">
-                  <div class="bg-blue-500 rounded-lg p-2 text-wrap">
-                    <p class="text-white"><%= message.content %></p>
+                  <div id={id} class="flex justify-end mb-4 items-center">
+                    <div class="bg-blue-500 rounded-lg p-2 text-wrap">
+                      <p class="text-white"><%= message.content %></p>
+                    </div>
+                    <img
+                      src={@current_user.profile_image || ~p"/images/avatar-default.svg"}
+                      class="w-6 h-6 rounded-full mx-2"
+                    />
                   </div>
-                  <img src={@current_user.profile_image || ~p"/images/avatar-default.svg"} class="w-6 h-6 rounded-full mx-2">
-                </div>
                 <% else %>
-                <div id={id} class="flex justify-start mb-4 items-center">
-                  <img src={@matched_user.profile_image || ~p"/images/avatar-default.svg"} class="w-6 h-6 rounded-full mx-2">
-                  <div class="bg-gray-200 rounded-lg p-2 text-wrap ">
-                    <p class="text-gray-800"><%= message.content %></p>
+                  <div id={id} class="flex justify-start mb-4 items-center">
+                    <img
+                      src={@matched_user.profile_image || ~p"/images/avatar-default.svg"}
+                      class="w-6 h-6 rounded-full mx-2"
+                    />
+                    <div class="bg-gray-200 rounded-lg p-2 text-wrap ">
+                      <p class="text-gray-800"><%= message.content %></p>
+                    </div>
                   </div>
-                </div>
                 <% end %>
               <% end %>
             </div>
             <div>
               <.form for={@form} phx-submit="send_message" class="flex">
                 <div class="flex-grow">
-                <.input
-                  field={@form[:content]}
-                  type="text"
-                  rows="1"
-                  placeholder="Type your message..."
-                />
+                  <.input
+                    field={@form[:content]}
+                    type="text"
+                    rows="1"
+                    placeholder="Type your message..."
+                  />
                 </div>
-                <button class="bg-blue-500 text-white rounded-lg px-4 py-2 mt-2" type="submit">Send</button>
+                <button class="bg-blue-500 text-white rounded-lg px-4 py-2 mt-2" type="submit">
+                  Send
+                </button>
               </.form>
             </div>
           </div>
@@ -108,9 +122,17 @@ defmodule FaithWeb.MessagesLive.Index do
 
   def handle_event("send_message", %{"message" => %{"content" => content}}, socket) do
     matched_user = Matches.get_matched_user(socket.assigns.match, socket.assigns.current_user.id)
-    {:ok, message} = Matches.create_message(%{content: content, sender_id: socket.assigns.current_user.id, receiver_id: matched_user.id})
 
-    FaithWeb.Endpoint.broadcast("chat:#{socket.assigns.match.id}", "new_message", %{message: message})
+    {:ok, message} =
+      Matches.create_message(%{
+        content: content,
+        sender_id: socket.assigns.current_user.id,
+        receiver_id: matched_user.id
+      })
+
+    FaithWeb.Endpoint.broadcast("chat:#{socket.assigns.match.id}", "new_message", %{
+      message: message
+    })
 
     changeset = Matches.change_message(%Message{content: ""})
 

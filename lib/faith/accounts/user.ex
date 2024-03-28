@@ -28,6 +28,12 @@ defmodule Faith.Accounts.User do
     field :confirmed_at, :utc_datetime
     field :is_disabled, :boolean, default: false
 
+    has_many :sent_swipes, Faith.Matches.Swipe, foreign_key: :sender_id
+    has_many :received_swipes, Faith.Matches.Swipe, foreign_key: :receiver_id
+
+    has_many :sent_event_invitations, Faith.Events.EventInvitation, foreign_key: :sender_id
+    has_many :received_event_invitations, Faith.Events.EventInvitation, foreign_key: :receiver_id
+
     timestamps(type: :utc_datetime)
   end
 
