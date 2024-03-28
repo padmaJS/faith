@@ -36,12 +36,20 @@ defmodule FaithWeb.MessagesLive.Index do
 
       <%= if @live_action == :chat && @matched_user do %>
         <div class="bg-white flex flex-col justify-between w-[85%]">
-          <div class="flex items-center w-full bg-gray-100 p-4">
-            <img
-              src={@matched_user.profile_image || ~p"/images/avatar-default.svg"}
-              class="w-10 h-10 rounded-full mr-2"
-            />
-            <%= @matched_user.full_name %>
+          <div class="flex items-center w-full bg-gray-100 py-2">
+            <.link
+              navigate={~p"/users/profile/#{@matched_user.id}"}
+              phx-click="view_profile"
+              class="px-4 py-2 hover:bg-gray-200"
+            >
+              <div class="flex items-center">
+                <img
+                  src={@matched_user.profile_image || ~p"/images/avatar-default.svg"}
+                  class="w-10 h-10 rounded-full mr-2"
+                />
+                <%= @matched_user.full_name %>
+              </div>
+            </.link>
           </div>
           <div class="flex-grow flex flex-col p-4 pb-0 h-[70%]">
             <div class="flex-grow overflow-y-auto">
@@ -94,7 +102,11 @@ defmodule FaithWeb.MessagesLive.Index do
   def mount(_params, _session, socket) do
     matches = Matches.list_matches_for_user(socket.assigns.current_user.id)
     changeset = Matches.change_message(%Message{})
-    {:ok, socket |> assign(matches: matches, matched_user: nil) |> assign_form(changeset)}
+
+    {:ok,
+     socket
+     |> assign(matches: matches, matched_user: nil, current_page: :messages)
+     |> assign_form(changeset)}
   end
 
   def handle_params(params, _url, socket) do
