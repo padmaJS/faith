@@ -66,6 +66,8 @@ defmodule FaithWeb.Router do
 
       scope "/admin", Admin do
         live "/users", UsersLive.Index, :index
+
+        live "/reported_users", ReportedUsersLive.Index, :index
       end
     end
   end
@@ -79,7 +81,8 @@ defmodule FaithWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
-      live "/users/profile", UserProfileLive.Show, :show
+      live "/users/profile/:user_id", UserProfileLive.Show, :show
+      live "/users/profile/:user_id/report_user", UserProfileLive.Show, :report_user
 
       live "/events", EventsLive.Index, :index
 

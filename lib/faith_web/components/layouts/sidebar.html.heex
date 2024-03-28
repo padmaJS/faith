@@ -252,6 +252,35 @@
           <span class="ml-3">Users</span>
         </.link>
       </li>
+      <li :if={@current_user.admin}>
+        <.link
+          navigate={~p"/admin/reported_users"}
+          class={[
+            "flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 group",
+            @current_page == :reported_users && " bg-gray-300 "
+          ]}
+        >
+          <svg
+            class="w-6 h-6"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#000000"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <path
+                fill="none"
+                stroke="#000000"
+                stroke-width="2"
+                d="M12,17 L12,19 M12,10 L12,16 M12,3 L2,22 L22,22 L12,3 Z"
+              >
+              </path>
+            </g>
+          </svg>
+          <span class="ml-3">Reported Users</span>
+        </.link>
+      </li>
       <li>
         <.link
           href={~p"/users/log_out"}

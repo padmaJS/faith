@@ -6,7 +6,7 @@ defmodule Faith.Accounts do
   import Ecto.Query, warn: false
   alias Faith.Repo
 
-  alias Faith.Accounts.{User, UserToken, UserNotifier}
+  alias Faith.Accounts.{User, UserToken, UserNotifier, ReportUser}
 
   ## Database getters
 
@@ -386,6 +386,34 @@ defmodule Faith.Accounts do
 
       {:error, meta} ->
         %{users: [], meta: meta}
+    end
+  end
+
+  def create_report_user(attrs) do
+    %ReportUser{}
+    |> ReportUser.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def get_report_user!(id) do
+    Repo.get!(ReportUser, id)
+  end
+
+  def delete_report_user(report_user) do
+    Repo.delete(report_user)
+  end
+
+  def change_report_user(report_user, attrs \\ %{}) do
+    ReportUser.changeset(report_user, attrs)
+  end
+
+  def list_report_users(params) do
+    case Flop.validate_and_run(ReportUser, params, for: ReportUser) do
+      {:ok, {report_users, meta}} ->
+        %{report_users: report_users |> Repo.preload(:receiver), meta: meta}
+
+      {:error, meta} ->
+        %{report_users: [], meta: meta}
     end
   end
 end
